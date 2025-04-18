@@ -1,0 +1,7 @@
+logging:
+  log_level: INFO
+
+notion:
+  api_link:
+  uploader:
+    page_name:
