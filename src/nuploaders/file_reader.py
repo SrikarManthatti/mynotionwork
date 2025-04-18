@@ -52,7 +52,7 @@ class ReadActor():
             return CSVReader(filepath)
         elif ext == '.xlsx':
             return ExcelReader(filepath)
-        elif ext == '.json'
+        elif ext == '.json':
             return JSONReader(filepath)
         else:
             raise ValueError(f"Only expecting to have csv, xlsx, or json file. Current format is {ext}")
