@@ -7,7 +7,7 @@ notion:
     page_name:
 
 imdb:
-  base_link:
+  base_link: 
 
 omdb:
-  base_link: https://www.omdbapi.com/
+  base_link: https://www.omdbapi.com

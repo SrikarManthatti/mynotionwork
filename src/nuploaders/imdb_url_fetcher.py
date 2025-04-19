@@ -3,7 +3,19 @@ from typing import Optional #for type hinting
 
 
 class IMDBFetcher():
-    pass
+    def __init__(self, base_link: str):
+        self.base_link = base_link
+        self.headers = {'User-Agent': 'Mozilla/5.0'} #using it to mimic browser, else IMDB return 403 client error
+        self.ref = "?ref_=fn_all_ttl_1"
+    
+    def generate_link(self, titleid: str) -> str:
+        return _validate_imdb_url(f"{self.base_link}/title/{titleid}/{self.ref}")
+    
+    def _validate_imdb_url(self, link: str) -> str:
+        response = requests.get(link, headers = self.headers)
+        response.raise_for_status()
+        return link
+
 
 @dataclass
 class Movie():
