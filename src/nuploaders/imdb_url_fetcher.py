@@ -1,35 +1,53 @@
 import requests
-from bs4 import BeautifulSoup
 from typing import Optional #for type hinting
-from urllib.parse import quote
+
 
 class IMDBFetcher():
-    def __init__(self, movie_name: str):
-        self.base_link = "https://www.imdb.com"
-        self.movie_name = _quote_movie_name(movie_name)
+    pass
+
+@dataclass
+class Movie():
+    """This is a data class which I am using to create a data structure for movie"""
+    title: str
+    runtime: str
+    genre: str
+    ratings: list
+    imdbrating: float
+    imdbid: str
+
+
+class OMDBClient():
+    """This class will be used to fetch the movie details from omdb"""
     
-    def _quote_movie_name(self, movie):
-        return quote(movie)
+    def __init__(self, api_key: str, base_link: str):
+        self.api_key = api_key
+        self.base_link = base_link
     
-    def fetch_imdb_url(self) -> Optional[str]:
-        """This function will use BeautifulSoup to fetch the IMDB URL of a movie"""
-        search_url = f"{self.base_link}/find/"
-        #https://www.imdb.com/find/?q=Godfather&ref_=nv_sr_sm
-        #https://www.imdb.com/find/?q=shawshank%20redemption&ref_=nv_sr_sm
-        #https://www.imdb.com/find/?q=shawshank%2520redemption&ref_=nv_sr_sm
-        #https://www.imdb.com/find/?q=shawshank+redemption&ref_=nv_sr_sm
-        #https://www.imdb.com/find?q=shawshank+redemption&ref_=nv_sr_sm
-        params = {"q":self.movie_name, "ref_":"nv_sr_sm"}
-        try: 
-            response = requests.get(search_url, params=params, timeout=10)
-            response.raise_for_status() #checks for response status code and raises error if something wrong
+    def fetch_movie(self, movie_name) -> Optional[Movie]:
+        params = {"t": movie_name, "apikey": self.api_key}
+
+        try:
+            response = requests.get(self.base_link, params = params, timeout = 10)
+            response.raise_for_status()
         except requests.RequestException as re:
-            log.Error("Error in fetching information for movie: %s, and link: %s", self.movie_name, search_url)
+            log.Error("Error in fetching information for movie: %s", self.movie_name)
             return None
-        soup = BeautifulSoup(response.text, "html.parser")
-        result = soup.find("td", class_="result_text")
-        #todo encoded string not working , fix it
         
+        data = response.json()
+        # check EXAMPLES at https://www.omdbapi.com/ to get sample response
+        if data.get("Response") == "True":
+            return Movie(
+                title = data.get("Title", "N/A")
+                runtime = data.get("Runtime", "N/A")
+                genre =  data.get("Genre", "N/A")
+                ratings =  data.get("Ratings", []) 
+                imdbrating =  data.get("imdbRating","N/A")
+                imdbid =  data.get("imdbID","N/A")
+            )
+        
+
+
+
 
 
 
