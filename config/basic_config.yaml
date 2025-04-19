@@ -5,3 +5,9 @@ notion:
   api_link:
   uploader:
     page_name:
+
+imdb:
+  base_link:
+
+omdb:
+  base_link: https://www.omdbapi.com/
