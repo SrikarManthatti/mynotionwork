@@ -4,7 +4,11 @@ logging:
 notion:
   api_link:
   uploader:
-    page_name:
+    pages:
+      movies_list_id: ad20afb60df94af3b0c7a8c37860d81c
+      my_home_id: 40f7dd76d4da42f0933257a290f83be6
+      reading_list_id: 25d3d0c7b821488a9a48e5f0d892cbb0
+      quick_note_id: 9a3f4b0cce404eaa88ab5595043ac06b
 
 imdb:
   base_link: 
