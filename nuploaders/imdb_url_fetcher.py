@@ -1,5 +1,6 @@
 import requests
 from typing import Optional #for type hinting
+from dataclasses import dataclass
 
 
 class IMDBFetcher():
@@ -51,13 +52,13 @@ class OMDBClient():
         # check EXAMPLES at https://www.omdbapi.com/ to get sample response
         if data.get("Response") == "True":
             return Movie(
-                title = data.get("Title", "N/A")
-                runtime = data.get("Runtime", "N/A")
-                genre =  data.get("Genre", "N/A")
-                ratings =  data.get("Ratings", []) 
-                imdbrating =  data.get("imdbRating","N/A")
-                imdbid =  data.get("imdbID","N/A")
-                imdblink = imdbobj.generate_link(imdbid)
+                title = data.get("Title", "N/A"),
+                runtime = data.get("Runtime", "N/A"),
+                genre =  data.get("Genre", "N/A"),
+                ratings =  data.get("Ratings", []), 
+                imdbrating =  data.get("imdbRating","N/A"),
+                imdbid =  data.get("imdbID","N/A"),
+                imdblink = imdbobj.generate_link(imdbid),
             )
         
 

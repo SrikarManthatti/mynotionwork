@@ -47,7 +47,7 @@ class ReadActor():
 
     @staticmethod
     def read_file(filepath) -> FileReader:
-        ext = Path(file_path).suffix.lower()
+        ext = Path(filepath).suffix.lower()
         if ext == '.csv':
             return CSVReader(filepath)
         elif ext == '.xlsx':

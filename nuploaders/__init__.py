@@ -19,7 +19,7 @@ else:
 # Load YAML config
 try:
     from .config_loader import load_config  # or use absolute import if needed
-    CONFIG = load_config("config.yaml")
+    CONFIG = load_config("config/basic_config.yaml")
     log.info("YAML config loaded successfully.")
 except Exception as e:
     CONFIG = {}

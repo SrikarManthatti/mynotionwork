@@ -18,15 +18,15 @@ class NotionDBManager(NotionConnectClient):
                 property_dict[key] = {"title": {}} #mandatory for notion db, hence making the first key/column as title
                 is_first_key = False
             else:
-                if column_name_property[key]["type"] = "string":
+                if column_name_property[key]["type"] == "string":
                     property_dict[key] = _get_static_template_rich_text()
-                elif column_name_property[key]["type"] = "boolean":
+                elif column_name_property[key]["type"] == "boolean":
                     property_dict[key] = _get_static_template_checkbox()
-                elif column_name_property[key]["type"] = "single_category":
+                elif column_name_property[key]["type"] == "single_category":
                     property_dict[key] = _get_static_template_select(column_name_property[key]["col_options"])
-                elif column_name_property[key]["type"] = "multi_category":
+                elif column_name_property[key]["type"] == "multi_category":
                     property_dict[key] = _get_static_template_multi_select(column_name_property[key]["col_options"])
-                elif column_name_property[key]["type"] = "people":
+                elif column_name_property[key]["type"] == "people":
                     property_dict[key] = _get_static_template_multi_people() 
                 else:
                     #log.warn("number, files are yet to be implemented")
