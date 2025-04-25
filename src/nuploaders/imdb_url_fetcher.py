@@ -31,8 +31,8 @@ class Movie():
 class OMDBClient():
     """This class will be used to fetch the movie details from omdb"""
     
-    def __init__(self, api_key: str, base_link: str):
-        self.api_key = api_key
+    def __init__(self, base_link: str):
+        self.api_key = os.getenv("OMDB_API_KEY") #api_key
         self.base_link = base_link
     
     def fetch_movie(self, movie_name) -> Optional[Movie]:

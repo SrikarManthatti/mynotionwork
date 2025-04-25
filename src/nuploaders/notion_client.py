@@ -2,16 +2,10 @@ import os
 from typing import Any
 from notion_client import Client
 
-try:
-    from dotenv import load_dotenv
-except ModuelNotFoundError as me:
-    log.error("Dotenv module not found")
-else:
-    load_dotenv()
-
 class NotionConnectClient():
-    def __init__(self, notion_api_key):
-        self.notion = Client(auth = notion_api_key)
+    def __init__(self):
+        NOTION_TOKEN = os.getenv("NOTION_TOKEN")
+        self.notion = Client(auth = NOTION_TOKEN)
     
     def _make_db_properties(column_name_property: dict) -> dict[str, Any]:
         """This will be used to create properties for db, column name and type of columns"""
