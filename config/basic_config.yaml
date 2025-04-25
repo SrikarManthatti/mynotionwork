@@ -15,12 +15,12 @@ notion:
 
 raw_files:
   movies:
-    path: "data/Showtime.xlsx"
+    path: "data/test_showtime.xlsx"
   anime: 
     path: "data/animetime.xlsx"
 
 imdb:
-  base_link: 
+  base_link: "https://www.imdb.com/"
 
 omdb:
   base_link: "https://www.omdbapi.com"
