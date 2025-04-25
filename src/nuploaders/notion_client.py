@@ -10,26 +10,50 @@ class NotionConnectClient():
 class NotionDBManager(NotionConnectClient):
     def _make_db_properties(column_name_property: dict) -> dict[str, Any]:
         """This will be used to create properties for db, column name and type of columns"""
-        pass #todo need to create a logic to write a dict that will generate column name with properties 
+        #{"cola":{"type":"string","col_options":[]}}
+        property_dict = []
+        is_first_key = True
+        for key in column_name_property.keys():
+            if is_first_key:
+                property_dict[key] = {"title": {}} #mandatory for notion db, hence making the first key/column as title
+                is_first_key = False
+            else:
+                if column_name_property[key]["type"] = "string":
+                    property_dict[key] = _get_static_template_rich_text()
+                elif column_name_property[key]["type"] = "boolean":
+                    property_dict[key] = _get_static_template_checkbox()
+                elif column_name_property[key]["type"] = "single_category":
+                    property_dict[key] = _get_static_template_select(column_name_property[key]["col_options"])
+                elif column_name_property[key]["type"] = "multi_category":
+                    property_dict[key] = _get_static_template_multi_select(column_name_property[key]["col_options"])
+                elif column_name_property[key]["type"] = "people":
+                    property_dict[key] = _get_static_template_multi_people() 
+                else:
+                    #log.warn("number, files are yet to be implemented")
+                    raise ValueError("number, files are yet to be implemented")
+
+                
+
+
     
     def _convert_datype_ntype(datatype: str) -> str:
         notion_datatypes = {"string": "rich_text", "boolean": "checkbox", "single_category": "select", "multi_category": "multi_select", "people": "people", "attachment": "files", "int": "number", "float": "number"}
         return notion_datatype.get(datatype, "rich_text")
     
-    def _get_static_template_rich_text(col_name) -> dict[str, Any]:
-        return {col_name: {"rich_text": {}}}
+    def _get_static_template_rich_text() -> dict[str, Any]:
+        return {"rich_text": {}}
     
-    def _get_static_template_checkbox(col_name) -> dict[str, Any]:
-        return {col_name: {"checkbox": {}}}
+    def _get_static_template_checkbox() -> dict[str, Any]:
+        return {"checkbox": {}}
     
-    def _get_static_template_select(col_name, col_options) -> dict[str, Any]:
-        return {col_name: {"select": {"options": col_options}}}
+    def _get_static_template_select(col_options) -> dict[str, Any]:
+        return {"select": {"options": col_options}}
     
-    def _get_static_template_number(col_name) -> dict[str, Any]:
-        return {col_name: {"number": {"format": "dollar"}}}
+    def _get_static_template_number() -> dict[str, Any]:
+        return {"number": {"format": "dollar"}}
     
-    def _get_static_template_multi_select(col_name, col_options) -> str:
-        return {col_name: {"type": "multi_select","multi_select": {"options": col_options},}}
+    def _get_static_template_multi_select(col_options) -> str:
+        return {"type": "multi_select","multi_select": {"options": col_options},}
     
     
     def _make_db_title(db_name: str) -> list:
