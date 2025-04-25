@@ -1,17 +1,26 @@
 logging:
-  log_level: INFO
+  log_level: "INFO"
 
 notion:
   api_link:
   uploader:
-    pages:
-      movies_list_id: ad20afb60df94af3b0c7a8c37860d81c
-      my_home_id: 40f7dd76d4da42f0933257a290f83be6
-      reading_list_id: 25d3d0c7b821488a9a48e5f0d892cbb0
-      quick_note_id: 9a3f4b0cce404eaa88ab5595043ac06b
+    movies:
+      parent_page_id: "40f7dd76d4da42f0933257a290f83be6"
+      db_name: "movies_list"
+      icon: "🎬"
+    anime:
+      parent_page_id: "40f7dd76d4da42f0933257a290f83be6"
+      db_name: "anime_list"
+      icon: "🏯"
+
+raw_files:
+  movies:
+    path: "data/Showtime.xlsx"
+  anime: 
+    path: "data/animetime.xlsx"
 
 imdb:
   base_link: 
 
 omdb:
-  base_link: https://www.omdbapi.com
+  base_link: "https://www.omdbapi.com"
