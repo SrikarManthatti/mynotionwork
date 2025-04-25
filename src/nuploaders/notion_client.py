@@ -6,10 +6,31 @@ class NotionConnectClient():
     def __init__(self):
         NOTION_TOKEN = os.getenv("NOTION_TOKEN")
         self.notion = Client(auth = NOTION_TOKEN)
-    
+
+class NotionDBManager(NotionConnectClient):
     def _make_db_properties(column_name_property: dict) -> dict[str, Any]:
         """This will be used to create properties for db, column name and type of columns"""
         pass #todo need to create a logic to write a dict that will generate column name with properties 
+    
+    def _convert_datype_ntype(datatype: str) -> str:
+        notion_datatypes = {"string": "rich_text", "boolean": "checkbox", "single_category": "select", "multi_category": "multi_select", "people": "people", "attachment": "files", "int": "number", "float": "number"}
+        return notion_datatype.get(datatype, "rich_text")
+    
+    def _get_static_template_rich_text(col_name) -> dict[str, Any]:
+        return {col_name: {"rich_text": {}}}
+    
+    def _get_static_template_checkbox(col_name) -> dict[str, Any]:
+        return {col_name: {"checkbox": {}}}
+    
+    def _get_static_template_select(col_name, col_options) -> dict[str, Any]:
+        return {col_name: {"select": {"options": col_options}}}
+    
+    def _get_static_template_number(col_name) -> dict[str, Any]:
+        return {col_name: {"number": {"format": "dollar"}}}
+    
+    def _get_static_template_multi_select(col_name, col_options) -> str:
+        return {col_name: {"type": "multi_select","multi_select": {"options": col_options},}}
+    
     
     def _make_db_title(db_name: str) -> list:
         """This will be used to create title property for db"""

@@ -26,6 +26,7 @@ class Movie():
     ratings: list
     imdbrating: float
     imdbid: str
+    imdblink: str
 
 
 class OMDBClient():
@@ -45,6 +46,7 @@ class OMDBClient():
             log.Error("Error in fetching information for movie: %s", self.movie_name)
             return None
         
+        imdb_obj = IMDBFetcher() #pass config value
         data = response.json()
         # check EXAMPLES at https://www.omdbapi.com/ to get sample response
         if data.get("Response") == "True":
@@ -55,6 +57,7 @@ class OMDBClient():
                 ratings =  data.get("Ratings", []) 
                 imdbrating =  data.get("imdbRating","N/A")
                 imdbid =  data.get("imdbID","N/A")
+                imdblink = imdbobj.generate_link(imdbid)
             )
         
 
