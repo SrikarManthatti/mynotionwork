@@ -7,10 +7,16 @@ def main():
     rdobj = file_reader.ReadActor()
     df_obj = rdobj.read_file(CONFIG["raw_files"]["movies"]["path"])
     df = df_obj.read()
-
     cleaned_df = clean_movies_dataframe(df)
-    cleaned_df.to_csv("output.csv")
-    log.info(cleaned_df)
+    notion_obj = notion_client.NotionDBManager()
+
+    #notion db config
+    parent_page_id = CONFIG["notion"]["uploader"]["movies"]["parent_page_id"]
+    db_name = CONFIG["notion"]["uploader"]["movies"]["db_name"]
+    page_title_icon = CONFIG["notion"]["uploader"]["movies"]["icon"]
+    column_name_property = get_col_properties_format(cleaned_df)
+
+    notion_obj.create_database(parent_page_id = parent_page_id, db_name = db_name, column_name_property = column_name_property,  page_title_icon = page_title_icon)
 
 def clean_movies_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     """THe sheet which we got have myowncategory as columns so we will change that as a column"""
@@ -34,6 +40,19 @@ def clean_movies_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     ]
     return unpivot_df
 
+def get_col_properties_format(df):
+    #{"cola":{"type":"string","col_options":[]}}
+    new_df = df[['title','runtime','enrich_mycategory','genre','ratings','imdbrating','imdbid','imdblink']]
+    property_dict = {}
+    property_dict['title'] = {"type":"string", "col_options":[]}
+    property_dict['runtime'] = {"type":"string", "col_options":[]}
+    property_dict['enrich_mycategory'] = {"type":"string", "col_options":[]}
+    property_dict['genre'] = {"type":"string", "col_options":[]}
+    property_dict['ratings'] = {"type":"string", "col_options":[]}
+    property_dict['imdbrating'] = {"type":"string", "col_options":[]}
+    property_dict['imdbid'] = {"type":"string", "col_options":[]}
+    property_dict['imdblink'] = {"type":"string", "col_options":[]}
+    return property_dict
 
 if __name__=="__main__":
     main()
