@@ -29,6 +29,8 @@ class NotionDBManager(NotionConnectClient):
                     property_dict[key] = self._get_static_template_multi_select(column_name_property[key]["col_options"])
                 elif column_name_property[key]["type"] == "people":
                     property_dict[key] = self._get_static_template_multi_people() 
+                elif column_name_property[key]["type"] == "link":
+                    property_dict[key] = self._get_static_template_url()
                 else:
                     #log.warn("number, files are yet to be implemented")
                     raise ValueError("number, files are yet to be implemented")
@@ -38,27 +40,51 @@ class NotionDBManager(NotionConnectClient):
         notion_datatypes = {"string": "rich_text", "boolean": "checkbox", "single_category": "select", "multi_category": "multi_select", "people": "people", "attachment": "files", "int": "number", "float": "number"}
         return notion_datatype.get(datatype, "rich_text")
     
-    def _get_static_template_rich_text(self) -> dict[str, Any]:
-        return {"rich_text": {}}
+    def _get_static_template_rich_text(self, update = False, val = None) -> dict[str, Any]:
+        if update:
+            return {"rich_text": [{"text": {"content": val}}]}
+        else:
+            return {"rich_text": {}}
     
-    def _get_static_template_checkbox(self) -> dict[str, Any]:
-        return {"checkbox": {}}
+    def _get_static_template_checkbox(self, update = False, val = None) -> dict[str, Any]:
+        if update:
+            return {"checkbox": [{"text": {"content": val}}]}
+        else:
+            return {"checkbox": {}}
     
-    def _get_static_template_select(self,col_options) -> dict[str, Any]:
-        return {"select": {"options": col_options}}
+    def _get_static_template_select(self,col_options, update = False, val = None) -> dict[str, Any]:
+        if update:
+            return {"select": {"name": val}}
+        else:
+            return {"select": {"options": col_options}}
     
-    def _get_static_template_number(self) -> dict[str, Any]:
-        return {"number": {"format": "dollar"}}
+    def _get_static_template_number(self, update = False, val = None) -> dict[str, Any]:
+        if update:
+            return {"number": float(val)}
+        else:
+            return {"number": {"format": "dollar"}}
     
-    def _get_static_template_multi_select(self, col_options) -> str:
-        return {"type": "multi_select","multi_select": {"options": col_options},}
+    def _get_static_template_multi_select(self, col_options, update = False, val = None) -> str:
+        if update:
+            return {"multi_select": {"name": val}}
+        else:
+            return {"type": "multi_select","multi_select": {"options": col_options},}
     
     
-    def _make_db_title(self, db_name: str) -> list:
+    def _get_static_template_url(self, update = False, val = None) -> str:
+        if update:
+            return {"url": val}
+        else:
+            return {"url": {}}
+
+    def _make_db_title(self, db_name: str, update = False, val = None) -> list:
         """This will be used to create title property for db"""
-        return [{"type": "text", "text": {"content": db_name}}]
+        if update:
+            return {"title": [{"text": {"content": val}}]}
+        else:
+            return [{"type": "text", "text": {"content": db_name}}]
     
-    def _set_db_icon(self, icon) -> dict[str, Any]:
+    def _set_db_icon(self, icon, update = False) -> dict[str, Any]:
         return {"type": "emoji", "emoji": icon}
 
     def _set_db_parent(self, parent_page_id: str) -> dict[str, Any]:
@@ -72,6 +98,23 @@ class NotionDBManager(NotionConnectClient):
         icon = self._set_db_icon(page_title_icon)
         parent = self._set_db_parent(parent_page_id)
         return self.notion.databases.create(parent=parent, title=title, properties=properties, icon=icon)
+    
+    def write_to_database(self, row, database_id):
+        "this will write each row to db in notion"
+        log.info("Inserting into database_id %s", database_id)
+        return self.notion.pages.create(
+        parent={"database_id": database_id},
+        properties={
+            "title": self._make_db_title(update = True, row['title']),
+            "enrich_mycategory": self._get_static_template_rich_text(update = True, row['enrich_mycategory']),
+            "genre": self._get_static_template_rich_text(update = True, row['genre']),,
+            "imdbid": self._get_static_template_rich_text(update = True, row['imdbid']),
+            "imdblink": self._get_static_template_url(update = True, row['imdblink'])
+            "imdbrating": self._get_static_template_rich_text(update = True, row['imdbrating']),
+            "ratings": self._get_static_template_rich_text(update = True, row['ratings']),
+            "runtime": self._get_static_template_rich_text(update = True, row['runtime']),
+        }
+    )
 
 
 

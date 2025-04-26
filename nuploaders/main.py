@@ -11,12 +11,17 @@ def main():
     notion_obj = notion_client.NotionDBManager()
 
     #notion db config
-    parent_page_id = CONFIG["notion"]["uploader"]["movies"]["parent_page_id"]
-    db_name = CONFIG["notion"]["uploader"]["movies"]["db_name"]
-    page_title_icon = CONFIG["notion"]["uploader"]["movies"]["icon"]
-    column_name_property = get_col_properties_format(cleaned_df)
+    if create_db:
+        parent_page_id = CONFIG["notion"]["uploader"]["movies"]["parent_page_id"]
+        db_name = CONFIG["notion"]["uploader"]["movies"]["db_name"]
+        page_title_icon = CONFIG["notion"]["uploader"]["movies"]["icon"]
+        column_name_property = get_col_properties_format(cleaned_df)
 
-    notion_obj.create_database(parent_page_id = parent_page_id, db_name = db_name, column_name_property = column_name_property,  page_title_icon = page_title_icon)
+        notion_obj.create_database(parent_page_id = parent_page_id, db_name = db_name, column_name_property = column_name_property,  page_title_icon = page_title_icon)
+    elif update_db:
+        for idx,row in cleaned_df.iterrows():
+            notion_obj.write_to_database()
+
 
 def clean_movies_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     """THe sheet which we got have myowncategory as columns so we will change that as a column"""
@@ -51,7 +56,7 @@ def get_col_properties_format(df):
     property_dict['ratings'] = {"type":"string", "col_options":[]}
     property_dict['imdbrating'] = {"type":"string", "col_options":[]}
     property_dict['imdbid'] = {"type":"string", "col_options":[]}
-    property_dict['imdblink'] = {"type":"string", "col_options":[]}
+    property_dict['imdblink'] = {"type":"link", "col_options":[]}
     return property_dict
 
 if __name__=="__main__":
