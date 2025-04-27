@@ -21,7 +21,15 @@ def main():
     elif update_db:
         for idx,row in cleaned_df.iterrows():
             notion_obj.write_to_database()
+    elif creup_db:
+        parent_page_id = CONFIG["notion"]["uploader"]["movies"]["parent_page_id"]
+        db_name = CONFIG["notion"]["uploader"]["movies"]["db_name"]
+        page_title_icon = CONFIG["notion"]["uploader"]["movies"]["icon"]
+        column_name_property = get_col_properties_format(cleaned_df)
 
+        notion_obj.create_database(parent_page_id = parent_page_id, db_name = db_name, column_name_property = column_name_property,  page_title_icon = page_title_icon)
+        for idx,row in cleaned_df.iterrows():
+            notion_obj.write_to_database()
 
 def clean_movies_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     """THe sheet which we got have myowncategory as columns so we will change that as a column"""

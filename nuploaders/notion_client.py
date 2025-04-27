@@ -97,7 +97,8 @@ class NotionDBManager(NotionConnectClient):
         title = self._make_db_title(db_name)
         icon = self._set_db_icon(page_title_icon)
         parent = self._set_db_parent(parent_page_id)
-        return self.notion.databases.create(parent=parent, title=title, properties=properties, icon=icon)
+        newdb = self.notion.databases.create(parent=parent, title=title, properties=properties, icon=icon)
+        return newdb
     
     def write_to_database(self, row, database_id):
         "this will write each row to db in notion"
