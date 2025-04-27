@@ -1,9 +1,18 @@
 import pandas as pd
 from nuploaders import CONFIG, log
 from nuploaders import file_reader, imdb_url_fetcher, notion_client
+import argparse
 
 def main():
     #read the data file
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "action", 
+        type=str, 
+        help="Type of action that you want to do create, update, create & update `creup`"
+    )
+    args = parser.parse_args()
+    
     rdobj = file_reader.ReadActor()
     df_obj = rdobj.read_file(CONFIG["raw_files"]["movies"]["path"])
     df = df_obj.read()
@@ -11,25 +20,25 @@ def main():
     notion_obj = notion_client.NotionDBManager()
 
     #notion db config
-    if create_db:
+    if args.action == "create":
         parent_page_id = CONFIG["notion"]["uploader"]["movies"]["parent_page_id"]
         db_name = CONFIG["notion"]["uploader"]["movies"]["db_name"]
         page_title_icon = CONFIG["notion"]["uploader"]["movies"]["icon"]
         column_name_property = get_col_properties_format(cleaned_df)
 
         notion_obj.create_database(parent_page_id = parent_page_id, db_name = db_name, column_name_property = column_name_property,  page_title_icon = page_title_icon)
-    elif update_db:
+    elif args.action == "update":
         for idx,row in cleaned_df.iterrows():
             notion_obj.write_to_database()
-    elif creup_db:
+    elif args.action == "creup":
         parent_page_id = CONFIG["notion"]["uploader"]["movies"]["parent_page_id"]
         db_name = CONFIG["notion"]["uploader"]["movies"]["db_name"]
         page_title_icon = CONFIG["notion"]["uploader"]["movies"]["icon"]
         column_name_property = get_col_properties_format(cleaned_df)
 
-        notion_obj.create_database(parent_page_id = parent_page_id, db_name = db_name, column_name_property = column_name_property,  page_title_icon = page_title_icon)
+        db_name = notion_obj.create_database(parent_page_id = parent_page_id, db_name = db_name, column_name_property = column_name_property,  page_title_icon = page_title_icon)
         for idx,row in cleaned_df.iterrows():
-            notion_obj.write_to_database()
+            notion_obj.write_to_database(row, db_name['id'])
 
 def clean_movies_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     """THe sheet which we got have myowncategory as columns so we will change that as a column"""

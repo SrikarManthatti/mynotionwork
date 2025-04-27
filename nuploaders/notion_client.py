@@ -77,7 +77,7 @@ class NotionDBManager(NotionConnectClient):
         else:
             return {"url": {}}
 
-    def _make_db_title(self, db_name: str, update = False, val = None) -> list:
+    def _make_db_title(self, db_name = None, update = False, val = None) -> list:
         """This will be used to create title property for db"""
         if update:
             return {"title": [{"text": {"content": val}}]}
@@ -106,14 +106,14 @@ class NotionDBManager(NotionConnectClient):
         return self.notion.pages.create(
         parent={"database_id": database_id},
         properties={
-            "title": self._make_db_title(update = True, row['title']),
-            "enrich_mycategory": self._get_static_template_rich_text(update = True, row['enrich_mycategory']),
-            "genre": self._get_static_template_rich_text(update = True, row['genre']),,
-            "imdbid": self._get_static_template_rich_text(update = True, row['imdbid']),
-            "imdblink": self._get_static_template_url(update = True, row['imdblink'])
-            "imdbrating": self._get_static_template_rich_text(update = True, row['imdbrating']),
-            "ratings": self._get_static_template_rich_text(update = True, row['ratings']),
-            "runtime": self._get_static_template_rich_text(update = True, row['runtime']),
+            "title": self._make_db_title(val = row['title'], update = True),
+            "enrich_mycategory": self._get_static_template_rich_text(val = row['enrich_mycategory'], update = True),
+            "genre": self._get_static_template_rich_text(val = row['genre'], update = True),
+            "imdbid": self._get_static_template_rich_text(val = row['imdbid'], update = True),
+            "imdblink": self._get_static_template_url(val = row['imdblink'], update = True),
+            "imdbrating": self._get_static_template_rich_text(val = row['imdbrating'], update = True),
+            "ratings": self._get_static_template_rich_text(val = row['ratings'], update = True),
+            "runtime": self._get_static_template_rich_text(val = row['runtime'], update = True),
         }
     )
 
