@@ -57,6 +57,7 @@ class OMDBClient():
 
             imdb_obj = IMDBFetcher(CONFIG["imdb"]["base_link"]) #pass config value
             data = response.json()
+            validated_movie = imdb_obj.generate_link(data.get("imdbID","N/A"))
             # check EXAMPLES at https://www.omdbapi.com/ to get sample response
             if data.get("Response") == "True":
                 return Movie(
@@ -67,7 +68,7 @@ class OMDBClient():
                     ratings =  data.get("Ratings", []), 
                     imdbrating =  data.get("imdbRating","N/A"),
                     imdbid =  data.get("imdbID","N/A"),
-                    imdblink = await imdb_obj.generate_link(data.get("imdbID","N/A")),
+                    imdblink = validated_movie,
                 )
         
 

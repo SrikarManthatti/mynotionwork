@@ -57,6 +57,7 @@ async def clean_movies_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 async def fetch_and_update(unpivot_df, omdb_obj, index, row):
         log.info("Info for movie %s", row['name'])
         movie_obj = await omdb_obj.fetch_movie(row['name'], row['mycategory'])
+        movie.obj.imdblink = await movie.obj.imdblink #moving this here to make sure validation is also async
         unpivot_df.loc[index, ['title','runtime','enrich_mycategory','genre','ratings','imdbrating','imdbid','imdblink']] = [
         movie_obj.title,
         movie_obj.runtime,

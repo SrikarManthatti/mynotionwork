@@ -6,7 +6,8 @@ from nuploaders import log
 class NotionConnectClient():
     def __init__(self):
         NOTION_TOKEN = os.getenv("NOTION_TOKEN")
-        self.notion = Client(auth = NOTION_TOKEN)
+        #self.notion = Client(auth = NOTION_TOKEN)
+        self.notion = AsyncClient(auth = NOTION_TOKEN) #async class https://github.com/ramnes/notion-sdk-py/blob/main/notion_client/client.py#L197C7-L197C18
 
 class NotionDBManager(NotionConnectClient):
     def _make_db_properties(self, column_name_property: dict) -> dict[str, Any]:
