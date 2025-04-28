@@ -1,3 +1,4 @@
+"""Module for initializing the nuploaders package, loading .env and YAML config."""
 import logging
 
 logging.basicConfig(
@@ -9,8 +10,8 @@ logging.basicConfig(
 log = logging.getLogger(__name__)
 
 try:
-    from dotenv import load_dotenv
-except ModuelNotFoundError as me:
+    from dotenv import load_dotenv # pylint: disable=import-error
+except ModuleNotFoundError as me: # pylint: disable=import-error
     log.error("python-dotenv module not found; skipping .env loading.")
 else:
     load_dotenv()
@@ -21,7 +22,6 @@ try:
     from .config_loader import load_config  # or use absolute import if needed
     CONFIG = load_config("config/basic_config.yaml")
     log.info("YAML config loaded successfully.")
-except Exception as e:
+except (FileNotFoundError, yaml.YAMLError) as e:
     CONFIG = {}
-    log.error(f"Failed to load YAML config: {e}")
-
+    log.error("Failed to load YAML config: %s", e)
