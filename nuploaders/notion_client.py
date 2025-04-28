@@ -1,12 +1,12 @@
 import os
 from typing import Any
-from notion_client import Client
+from notion_client import Client, AsyncClient
 from nuploaders import log
 
 class NotionConnectClient():
     def __init__(self):
         NOTION_TOKEN = os.getenv("NOTION_TOKEN")
-        #self.notion = Client(auth = NOTION_TOKEN)
+        self.single_notion = Client(auth = NOTION_TOKEN)
         self.notion = AsyncClient(auth = NOTION_TOKEN) #async class https://github.com/ramnes/notion-sdk-py/blob/main/notion_client/client.py#L197C7-L197C18
 
 class NotionDBManager(NotionConnectClient):
@@ -92,31 +92,32 @@ class NotionDBManager(NotionConnectClient):
         return {"type": "page_id", "page_id": parent_page_id}
     
     def create_database(self, parent_page_id: str, db_name: str, column_name_property: dict,  page_title_icon = None) -> str:
-        """This function will be used to create database under a parent page"""
-        log.info("creating a database %s under parent page %s", db_name, parent_page_id)
-        properties = self._make_db_properties(column_name_property)
-        title = self._make_db_title(db_name)
-        icon = self._set_db_icon(page_title_icon)
-        parent = self._set_db_parent(parent_page_id)
-        newdb = self.notion.databases.create(parent=parent, title=title, properties=properties, icon=icon)
-        return newdb
+            """This function will be used to create database under a parent page"""
+            log.info("creating a database %s under parent page %s", db_name, parent_page_id)
+            properties = self._make_db_properties(column_name_property)
+            title = self._make_db_title(db_name)
+            icon = self._set_db_icon(page_title_icon)
+            parent = self._set_db_parent(parent_page_id)
+            #newdb = await self.notion.databases.create(parent=parent, title=title, properties=properties, icon=icon)
+            newdb = self.single_notion.databases.create(parent=parent, title=title, properties=properties, icon=icon)
+            return newdb
     
-    def write_to_database(self, row, database_id):
-        "this will write each row to db in notion"
-        log.info("Inserting into database_id %s", database_id)
-        return self.notion.pages.create(
-        parent={"database_id": database_id},
-        properties={
-            "title": self._make_db_title(val = row['title'], update = True),
-            "enrich_mycategory": self._get_static_template_rich_text(val = row['enrich_mycategory'], update = True),
-            "genre": self._get_static_template_rich_text(val = row['genre'], update = True),
-            "imdbid": self._get_static_template_rich_text(val = row['imdbid'], update = True),
-            "imdblink": self._get_static_template_url(val = row['imdblink'], update = True),
-            "imdbrating": self._get_static_template_rich_text(val = row['imdbrating'], update = True),
-            "ratings": self._get_static_template_rich_text(val = row['ratings'], update = True),
-            "runtime": self._get_static_template_rich_text(val = row['runtime'], update = True),
-        }
-    )
+    async def write_to_database(self, row, database_id):
+                "this will write each row to db in notion"
+                log.info("Inserting into database_id %s", database_id)
+                return await self.notion.pages.create(
+                parent={"database_id": database_id},
+                properties={
+                    "title": self._make_db_title(val = row['title'], update = True),
+                    "enrich_mycategory": self._get_static_template_rich_text(val = row['enrich_mycategory'], update = True),
+                    "genre": self._get_static_template_rich_text(val = row['genre'], update = True),
+                    "imdbid": self._get_static_template_rich_text(val = row['imdbid'], update = True),
+                    "imdblink": self._get_static_template_url(val = row['imdblink'], update = True),
+                    "imdbrating": self._get_static_template_rich_text(val = row['imdbrating'], update = True),
+                    "ratings": self._get_static_template_rich_text(val = row['ratings'], update = True),
+                    "runtime": self._get_static_template_rich_text(val = row['runtime'], update = True),
+                }
+                )
 
 
 
