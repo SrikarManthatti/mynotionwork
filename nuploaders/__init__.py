@@ -1,7 +1,7 @@
 import logging
 
 logging.basicConfig(
-    level = logging.INFO,
+    level = logging.WARN,
     format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     datefmt = '%Y-%m-%d %H:%M:%S',
 )
@@ -24,3 +24,4 @@ try:
 except Exception as e:
     CONFIG = {}
     log.error(f"Failed to load YAML config: {e}")
+
