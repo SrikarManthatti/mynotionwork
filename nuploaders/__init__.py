@@ -1,5 +1,6 @@
 """Module for initializing the nuploaders package, loading .env and YAML config."""
 import logging
+import yaml # pylint: disable=import-error
 
 logging.basicConfig(
     level = logging.WARN,
