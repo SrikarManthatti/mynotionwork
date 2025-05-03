@@ -5,7 +5,7 @@ A Python-based automation tool to upload structured data (e.g., from Excel or CS
 ---
 
 ## 📁 Project Structure
-
+```
 .
 ├── ReadMe.Md
 ├── config
@@ -31,7 +31,7 @@ A Python-based automation tool to upload structured data (e.g., from Excel or CS
 ├── random
 ├── requirements.txt
 └── tests
-
+```
 
 ---
 
