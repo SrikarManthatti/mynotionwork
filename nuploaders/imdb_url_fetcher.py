@@ -4,7 +4,7 @@ import os
 from typing import Optional
 from dataclasses import dataclass
 
-import httpx
+import httpx # pylint: disable=import-error
 
 from nuploaders import CONFIG, log
 

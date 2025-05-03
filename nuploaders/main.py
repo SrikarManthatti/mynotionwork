@@ -29,7 +29,7 @@ async def main():
         parent_page_id = CONFIG["notion"]["uploader"]["movies"]["parent_page_id"]
         db_name = CONFIG["notion"]["uploader"]["movies"]["db_name"]
         page_title_icon = CONFIG["notion"]["uploader"]["movies"]["icon"]
-        column_name_property = get_col_properties_format(cleaned_df)
+        column_name_property = get_col_properties_format()
 
         notion_obj.create_database(
             parent_page_id=parent_page_id,
@@ -41,14 +41,14 @@ async def main():
     elif args.action == "update":
         update_tasks = []
         for _, row in cleaned_df.iterrows():
-            update_tasks.append(notion_obj.write_to_database(row))
+            update_tasks.append(notion_obj.write_to_database(row, None))
         await asyncio.gather(*update_tasks)
 
     elif args.action == "creup":
         parent_page_id = CONFIG["notion"]["uploader"]["movies"]["parent_page_id"]
         db_name = CONFIG["notion"]["uploader"]["movies"]["db_name"]
         page_title_icon = CONFIG["notion"]["uploader"]["movies"]["icon"]
-        column_name_property = get_col_properties_format(cleaned_df)
+        column_name_property = get_col_properties_format()
 
         new_db = notion_obj.create_database(
             parent_page_id=parent_page_id,
@@ -73,19 +73,19 @@ async def clean_movies_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     movie_results = []
 
     tasks = [
-        fetch_and_update(unpivot_df, omdb_obj, index, row, CONFIG["imdb"]["validate"], movie_results)
+        fetch_and_update(omdb_obj, row, CONFIG["imdb"]["validate"], movie_results)
         for index, row in unpivot_df.iterrows()
     ]
     await asyncio.gather(*tasks)
     return pd.DataFrame(movie_results)
 
 
-async def fetch_and_update(unpivot_df, omdb_obj, index, row, validate, movie_results):
+async def fetch_and_update(omdb_obj, row, validate, movie_results):
     """Fetches movie metadata and appends to results."""
     movie_obj = await omdb_obj.fetch_movie(row["name"], row["mycategory"], validate)
 
     if movie_obj is None:
-        log.error(f"Movie object for '{row['name']}' is None. Skipping...")
+        log.error("Movie object for %s is None. Skipping...", {row['name']})
         return
 
     if validate:
@@ -103,7 +103,7 @@ async def fetch_and_update(unpivot_df, omdb_obj, index, row, validate, movie_res
     })
 
 
-def get_col_properties_format(df: pd.DataFrame) -> dict:
+def get_col_properties_format() -> dict:
     """Formats Notion column property schema from dataframe."""
     return {
         "title": {"type": "string", "col_options": []},
