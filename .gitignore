@@ -1,0 +1,6 @@
+*.env
+*random
+*just_testing.py
+*__pycache__*
+*output*
+*DS_Store

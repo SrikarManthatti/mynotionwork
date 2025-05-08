@@ -1,7 +1,27 @@
 logging:
-  log_level: INFO
+  log_level: "INFO"
 
 notion:
   api_link:
   uploader:
-    page_name:
+    movies:
+      parent_page_id: "40f7dd76d4da42f0933257a290f83be6"
+      db_name: "movies_list"
+      icon: "🎬"
+    anime:
+      parent_page_id: "40f7dd76d4da42f0933257a290f83be6"
+      db_name: "anime_list"
+      icon: "🏯"
+
+raw_files:
+  movies:
+    path: "data/Showtime.xlsx"
+  anime: 
+    path: "data/animetime.xlsx"
+
+imdb:
+  base_link: "https://www.imdb.com"
+  validate: False
+
+omdb:
+  base_link: "https://www.omdbapi.com"
